@@ -1,0 +1,210 @@
+/* ============================================
+   Folo Reader Optimizer - Content Styles
+   ============================================ */
+
+/* ---- 1. 隐藏右侧阅读栏，扩展中间栏 ---- */
+
+/* 针对 folo 常见的三栏布局选择器 */
+/* 这些选择器基于常见的 RSS 阅读器模式，若 folo 更新 DOM 结构，可能需要调整 */
+
+/* 当弹窗激活时，禁止背景滚动 */
+body.folo-modal-open {
+  overflow: hidden !important;
+}
+
+/* ---- 2. 提升时间线文章 item 可读性 ---- */
+
+[data-entry-id] > a,
+[data-entry-id] > article {
+  min-height: 84px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+[data-entry-id] :is(h1, h2, h3, h4, [class*="title"], [class*="headline"]) {
+  font-size: 18px !important;
+  line-height: 1.45 !important;
+}
+
+/* ============================================
+   弹窗 Dialog 样式
+   ============================================ */
+
+#folo-reader-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#folo-reader-modal.active {
+  display: flex;
+}
+
+/* 遮罩层 */
+#folo-reader-modal .folo-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 弹窗容器：占据视口 80% */
+#folo-reader-modal .folo-modal-container {
+  position: relative;
+  width: 80vw;
+  height: 80vh;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: folo-modal-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 暗色模式适配 */
+@media (prefers-color-scheme: dark) {
+  #folo-reader-modal .folo-modal-container {
+    background: #1e1e1e;
+    color: #e0e0e0;
+  }
+}
+
+/* 弹窗进入动画 */
+@keyframes folo-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 弹窗头部 */
+#folo-reader-modal .folo-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  #folo-reader-modal .folo-modal-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+#folo-reader-modal .folo-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding-right: 16px;
+}
+
+/* 关闭按钮 */
+#folo-reader-modal .folo-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+
+#folo-reader-modal .folo-modal-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  #folo-reader-modal .folo-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+#folo-reader-modal .folo-modal-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 弹窗内容区 */
+#folo-reader-modal .folo-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+#folo-reader-modal .folo-loading {
+  color: #999;
+  text-align: center;
+  padding-top: 40px;
+}
+
+/* 自定义滚动条 */
+#folo-reader-modal .folo-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+#folo-reader-modal .folo-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#folo-reader-modal .folo-modal-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+#folo-reader-modal .folo-modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  #folo-reader-modal .folo-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  #folo-reader-modal .folo-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* 弹窗内图片自适应 */
+#folo-reader-modal .folo-modal-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* 弹窗内链接样式 */
+#folo-reader-modal .folo-modal-body a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+#folo-reader-modal .folo-modal-body a:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+  #folo-reader-modal .folo-modal-body a {
+    color: #60a5fa;
+  }
+}

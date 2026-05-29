@@ -101,15 +101,35 @@
       .filter(Boolean);
   }
 
-  function readBlockKeywords() {
-    const storageValue = window.localStorage.getItem(BLOCK_KEYWORDS_STORAGE_KEY);
-    const configured = parseKeywords(storageValue);
-    if (configured.length > 0) return configured;
-    return parseKeywords(DEFAULT_BLOCK_KEYWORDS);
+  function readBlockKeywords(callback) {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(BLOCK_KEYWORDS_STORAGE_KEY, (result) => {
+        const configured = parseKeywords(result[BLOCK_KEYWORDS_STORAGE_KEY]);
+        if (callback) callback(configured.length > 0 ? configured : parseKeywords(DEFAULT_BLOCK_KEYWORDS));
+      });
+    } else {
+      const storageValue = window.localStorage.getItem(BLOCK_KEYWORDS_STORAGE_KEY);
+      const configured = parseKeywords(storageValue);
+      if (callback) callback(configured.length > 0 ? configured : parseKeywords(DEFAULT_BLOCK_KEYWORDS));
+    }
   }
 
-  function refreshBlockKeywords() {
-    state.blockKeywords = readBlockKeywords();
+  function refreshBlockKeywords(callback) {
+    readBlockKeywords((keywords) => {
+      state.blockKeywords = keywords;
+      if (callback) callback();
+    });
+  }
+
+  function listenBlockKeywordsChange() {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.onChanged) {
+      chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === "local" && changes[BLOCK_KEYWORDS_STORAGE_KEY]) {
+          state.blockKeywords = parseKeywords(changes[BLOCK_KEYWORDS_STORAGE_KEY].newValue);
+          applyKeywordFilter();
+        }
+      });
+    }
   }
 
   function isTextBlocked(text, keywords = state.blockKeywords) {
@@ -501,16 +521,18 @@
   }
 
   function init() {
-    refreshBlockKeywords();
+    listenBlockKeywordsChange();
     bindRouteEvents();
     bindClickTracking();
     bindEscClose();
     bindLayoutGuard();
 
     const attemptInit = () => {
-      if (isTimelinePath()) {
-        handleTimelineState();
-      }
+      refreshBlockKeywords(() => {
+        if (isTimelinePath()) {
+          handleTimelineState();
+        }
+      });
     };
 
     if (document.readyState === "loading") {

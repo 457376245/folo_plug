@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #fff;
+      padding: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1e1e1e; color: #e0e0e0; }
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .input-row input {
+      flex: 1;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid #d0d0d0;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: transparent;
+      color: inherit;
+    }
+
+    .input-row input:focus {
+      border-color: #2563eb;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .input-row input { border-color: #444; }
+      .input-row input:focus { border-color: #60a5fa; }
+    }
+
+    .input-row button {
+      height: 34px;
+      padding: 0 14px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .input-row button:hover { background: #1d4ed8; }
+
+    .keyword-list {
+      list-style: none;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .keyword-list:empty::after {
+      content: "暂无屏蔽词";
+      display: block;
+      text-align: center;
+      color: #999;
+      padding: 16px 0;
+      font-size: 13px;
+    }
+
+    .keyword-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 6px;
+      transition: background 0.12s;
+    }
+
+    .keyword-item:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .keyword-item:hover { background: rgba(255, 255, 255, 0.06); }
+    }
+
+    .keyword-text {
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .keyword-del {
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: #999;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .keyword-del:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .keyword-del svg {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>屏蔽词管理</h1>
+  <div class="input-row">
+    <input id="kw-input" type="text" placeholder="输入屏蔽词，回车添加" autocomplete="off" />
+    <button id="kw-add" type="button">添加</button>
+  </div>
+  <ul class="keyword-list" id="kw-list"></ul>
+  <script src="popup.js"></script>
+</body>
+</html>

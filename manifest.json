@@ -2,8 +2,11 @@
   "manifest_version": 3,
   "name": "Folo Reader Optimizer",
   "version": "1.0.0",
-  "description": "优化 folo.is 阅读体验：扩展文章列表宽度，点击标题以弹窗阅读正文",
-  "permissions": [],
+  "description": "优化 folo.is 阅读体验：扩展文章列表宽度，点击标题以弹窗阅读正文，支持关键词屏蔽",
+  "permissions": ["storage"],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "content_scripts": [
     {
       "matches": [

@@ -316,6 +316,33 @@
       link.target = "_blank";
       link.rel = "noopener noreferrer";
     });
+
+    // 修复懒加载图片：将 data-* 真实地址还原到 src
+    const lazySrcAttrs = [
+      "data-src",
+      "data-lazy-src",
+      "data-original",
+      "data-original-src",
+      "data-actualsrc",
+      "data-echo",
+    ];
+    bodyEl.querySelectorAll("img").forEach((img) => {
+      for (const attr of lazySrcAttrs) {
+        const value = img.getAttribute(attr);
+        if (value) {
+          img.src = value;
+          break;
+        }
+      }
+      // 处理 srcset 懒加载
+      const lazySrcset = img.getAttribute("data-srcset");
+      if (lazySrcset) {
+        img.srcset = lazySrcset;
+      }
+      // 移除懒加载标记，确保立即加载
+      img.removeAttribute("loading");
+      img.removeAttribute("decoding");
+    });
   }
 
   function extractShadowDomHtml(root) {

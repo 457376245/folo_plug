@@ -230,19 +230,25 @@
     const layout = findLayoutPanels();
     if (!layout || !layout.middlePanel) return;
 
-    layout.middlePanel.style.flex = "1 1 auto";
-    layout.middlePanel.style.width = "100%";
-    layout.middlePanel.style.maxWidth = "none";
-    layout.middlePanel.style.minWidth = "0";
+    // 避免重复设置已有的样式，减少 reflow
+    if (layout.middlePanel.getAttribute(HIDDEN_PANEL_ATTR) !== "true") {
+      layout.middlePanel.style.flex = "1 1 auto";
+      layout.middlePanel.style.width = "100%";
+      layout.middlePanel.style.maxWidth = "none";
+      layout.middlePanel.style.minWidth = "0";
+      layout.middlePanel.setAttribute(HIDDEN_PANEL_ATTR, "true");
+    }
 
-    if (layout.rightPanel) {
+    if (layout.rightPanel && layout.rightPanel.getAttribute(HIDDEN_PANEL_ATTR) !== "true") {
       layout.rightPanel.style.display = "none";
       layout.rightPanel.setAttribute(HIDDEN_PANEL_ATTR, "true");
     }
 
     layout.splitters.forEach((splitter) => {
-      splitter.style.display = "none";
-      splitter.setAttribute(HIDDEN_SPLITTER_ATTR, "true");
+      if (splitter.getAttribute(HIDDEN_SPLITTER_ATTR) !== "true") {
+        splitter.style.display = "none";
+        splitter.setAttribute(HIDDEN_SPLITTER_ATTR, "true");
+      }
     });
   }
 
@@ -505,12 +511,15 @@
   }
 
   function bindLayoutGuard() {
+    let guardBusy = false;
     setInterval(() => {
-      if (isTimelinePath()) {
-        refreshBlockKeywords();
+      if (guardBusy || !isTimelinePath()) return;
+      guardBusy = true;
+      refreshBlockKeywords(() => {
         applyKeywordFilter();
         hideRightPanelAndExpandMiddle();
-      }
+        guardBusy = false;
+      });
     }, 400);
   }
 
